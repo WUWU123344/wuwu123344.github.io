@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老人行为健康监测系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="logo">老人行为健康监测系统</div>
+        <div class="nav-right">
+            <div class="user-info" id="user-info">
+                <span id="current-user">--</span>
+                <span id="user-role-badge" class="role-badge">--</span>
+            </div>
+            <div class="device-status">
+                <span class="status-dot online"></span>
+                <span>设备在线</span>
+            </div>
+            <div class="current-time" id="current-time"></div>
+            <button class="btn btn-secondary logout-btn" onclick="logout()">退出登录</button>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 侧边导航栏 -->
+        <aside class="side-nav">
+            <ul>
+                <li class="nav-item active" data-module="overview">
+                    <span class="nav-icon">📊</span>
+                    <span>数据总览</span>
+                </li>
+                <li class="nav-item" data-module="behavior">
+                    <span class="nav-icon">🚶</span>
+                    <span>行为监测</span>
+                </li>
+                <li class="nav-item" data-module="location">
+                    <span class="nav-icon">📍</span>
+                    <span>定位追踪</span>
+                </li>
+                <li class="nav-item" data-module="history">
+                    <span class="nav-icon">📜</span>
+                    <span>历史记录</span>
+                </li>
+                <li class="nav-item admin-only" data-module="device" id="device-nav">
+                    <span class="nav-icon">📡</span>
+                    <span>设备绑定</span>
+                </li>
+                <li class="nav-item" data-module="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>系统设置</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="content">
+            <!-- 数据总览模块 -->
+            <section class="module active" id="overview">
+                <div class="status-card">
+                    <h2>当前状态</h2>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="label">最新行为：</span>
+                            <span class="value" id="latest-behavior">--</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">状态评估：</span>
+                            <span class="value status-normal" id="current-status">正常</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">更新时间：</span>
+                            <span class="value" id="status-time">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard">
+                    <div class="dashboard-card">
+                        <h3>WiFi信号监测</h3>
+                        <div class="wifi-items">
+                            <div class="wifi-item">
+                                <span class="wifi-label">信号强度</span>
+                                <div class="signal-level">
+                                    <span class="signal-dot active"></span>
+                                    <span class="signal-dot active"></span>
+                                    <span class="signal-dot active"></span>
+                                    <span class="signal-dot active"></span>
+                                    <span class="signal-dot"></span>
+                                </div>
+                            </div>
+                            <div class="wifi-item">
+                                <span class="wifi-label">信道质量</span>
+                                <span id="channel-quality">--dB</span>
+                            </div>
+                            <div class="wifi-item">
+                                <span class="wifi-label">相位变化</span>
+                                <span id="phase-change">--°</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3>安全监测</h3>
+                        <div class="safety-items">
+                            <div class="safety-item">
+                                <span class="safety-label">跌倒检测</span>
+                                <span class="safety-status normal" id="fall-detection">正常</span>
+                            </div>
+                            <div class="safety-item">
+                                <span class="safety-label">长时间静止</span>
+                                <span class="safety-status normal" id="long-stationary">正常</span>
+                            </div>
+                            <div class="safety-item">
+                                <span class="safety-label">行为异常</span>
+                                <span class="safety-status normal" id="behavior-anomaly">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alerts-section">
+                    <h3>最近告警</h3>
+                    <div class="alerts-list">
+                        <div class="alert-item" data-alert="1">
+                            <div class="alert-header">
+                                <span class="alert-type warning">异常行为</span>
+                                <span class="alert-time">2026-01-15 14:30</span>
+                            </div>
+                            <div class="alert-content">
+                                <p>检测到老人长时间静止不动，可能存在跌倒风险</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 行为监测模块 -->
+            <section class="module" id="behavior">
+                <div class="status-card">
+                    <h2>行为监测详情</h2>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="label">当前行为：</span>
+                            <span class="value" id="current-behavior">--</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">行为状态：</span>
+                            <span class="value status-normal" id="behavior-status">正常</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">检测时间：</span>
+                            <span class="value" id="behavior-time">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard">
+                    <div class="dashboard-card chart-card behavior-trend-card">
+                        <h3>行为趋势</h3>
+                        <canvas id="behaviorChart"></canvas>
+                    </div>
+                    <div class="dashboard-card behavior-model-card">
+                        <h3>行为模型</h3>
+                        <div class="behavior-3d-model">
+                            <canvas id="behaviorModel"></canvas>
+                            <div class="model-controls">
+                                <button class="btn btn-secondary" onclick="rotateModel()">旋转模型</button>
+                                <button class="btn btn-secondary" onclick="resetModel()">重置视角</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card activity-stats-card">
+                        <h3>活动量统计</h3>
+                        <div class="activity-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">今日活动量</span>
+                                <span class="stat-value" id="today-activity">--</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">行走步数</span>
+                                <span class="stat-value" id="steps-count">--</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">活动时长</span>
+                                <span class="stat-value" id="activity-duration">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card indoor-location-card">
+                        <h3>室内定位</h3>
+                        <div class="indoor-location">
+                            <div class="location-map">
+                                <div class="map-placeholder">
+                                    <span>🏠</span>
+                                    <p>室内地图</p>
+                                </div>
+                            </div>
+                            <div class="location-info">
+                                <div class="location-item">
+                                    <span class="label">当前位置：</span>
+                                    <span class="value" id="indoor-position">--</span>
+                                </div>
+                                <div class="location-item">
+                                    <span class="label">定位精度：</span>
+                                    <span class="value" id="indoor-accuracy">--m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alerts-section">
+                    <h3>行为历史记录</h3>
+                    <div class="behavior-history-grid" id="behavior-history">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 定位追踪模块 -->
+            <section class="module" id="location">
+                <div class="status-card">
+                    <h2>实时定位</h2>
+                    <div class="location-info">
+                        <div class="location-map">
+                            <div class="map-placeholder">
+                                <span>🗺️</span>
+                                <p>地图加载中...</p>
+                            </div>
+                        </div>
+                        <div class="location-details">
+                            <div class="location-item">
+                                <span class="label">当前位置：</span>
+                                <span class="value">北京市朝阳区某某街道</span>
+                            </div>
+                            <div class="location-item">
+                                <span class="label">定位精度：</span>
+                                <span class="value" id="location-precision">--m</span>
+                            </div>
+                            <div class="location-item">
+                                <span class="label">更新时间：</span>
+                                <span class="value" id="location-time">--</span>
+                            </div>
+                            <div class="location-actions">
+                                <button class="btn btn-primary">刷新位置</button>
+                                <button class="btn btn-secondary">查看历史轨迹</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 历史记录模块 -->
+            <section class="module" id="history">
+                <div class="status-card">
+                    <h2>历史记录查询</h2>
+                    <div class="history-filters">
+                        <div class="filter-group">
+                            <label>开始时间：</label>
+                            <input type="datetime-local" class="form-input">
+                        </div>
+                        <div class="filter-group">
+                            <label>结束时间：</label>
+                            <input type="datetime-local" class="form-input">
+                        </div>
+                        <div class="filter-group">
+                            <label>记录类型：</label>
+                            <select class="form-input">
+                                <option>全部</option>
+                                <option>行为记录</option>
+                                <option>告警记录</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary">查询</button>
+                    </div>
+                </div>
+
+                <div class="alerts-section">
+                    <h3>查询结果</h3>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div class="history-header">
+                                <span class="history-type">行为记录</span>
+                                <span class="history-time">2026-01-15 14:30:25</span>
+                            </div>
+                            <div class="history-content">
+                                <p>检测到老人正在行走，速度正常，状态良好</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 设备绑定模块（仅管理员可见） -->
+            <section class="module" id="device">
+                <div class="status-card">
+                    <h2>WiFi设备绑定</h2>
+                    <p class="section-desc">管理员可以通过此页面绑定WiFi路由器设备，实现无感化监测</p>
+                </div>
+
+                <div class="dashboard">
+                    <div class="dashboard-card device-bind-card">
+                        <h3>绑定新设备</h3>
+                        <div class="device-form">
+                            <div class="form-group">
+                                <label class="form-label">设备名称</label>
+                                <input type="text" class="form-input" id="device-name" placeholder="如：客厅路由器">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">WiFi名称 (SSID)</label>
+                                <input type="text" class="form-input" id="wifi-ssid" placeholder="请输入WiFi名称">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">WiFi密码</label>
+                                <input type="password" class="form-input" id="wifi-password" placeholder="请输入WiFi密码">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">设备MAC地址</label>
+                                <input type="text" class="form-input" id="device-mac" placeholder="如：00:11:22:33:44:55">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">安装位置</label>
+                                <select class="form-input" id="device-location">
+                                    <option value="living-room">客厅</option>
+                                    <option value="bedroom">卧室</option>
+                                    <option value="kitchen">厨房</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="bindDevice()">绑定设备</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card device-list-card">
+                        <h3>已绑定设备</h3>
+                        <div class="device-list" id="device-list">
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <span class="device-icon">📡</span>
+                                    <div class="device-details">
+                                        <span class="device-name">客厅路由器</span>
+                                        <span class="device-status online">在线</span>
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-secondary btn-sm" onclick="testDevice()">测试</button>
+                                    <button class="btn btn-danger btn-sm" onclick="unbindDevice()">解绑</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard">
+                    <div class="dashboard-card device-status-card">
+                        <h3>设备状态监测</h3>
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <span class="status-label">连接状态</span>
+                                <span class="status-value online">已连接</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">信号质量</span>
+                                <span class="status-value">优秀</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">数据同步</span>
+                                <span class="status-value">正常</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">最后同步</span>
+                                <span class="status-value" id="last-sync">刚刚</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 系统设置模块 -->
+            <section class="module" id="settings">
+                <div class="status-card">
+                    <h2>系统设置</h2>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <h4>设备管理</h4>
+                            <div class="setting-content">
+                                <div class="setting-row">
+                                    <span>设备在线状态</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="device-online">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-row">
+                                    <span>数据同步频率</span>
+                                    <select class="form-input" id="sync-frequency">
+                                        <option>实时</option>
+                                        <option>每5秒</option>
+                                        <option>每30秒</option>
+                                        <option>每分钟</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <h4>告警设置</h4>
+                            <div class="setting-content">
+                                <div class="setting-row">
+                                    <span>启用告警通知</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked id="alert-enabled">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-row">
+                                    <span>告警阈值设置</span>
+                                    <button class="btn btn-secondary" onclick="showAlertSettings()">配置</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <h4>联系人信息</h4>
+                            <div class="setting-content">
+                                <div class="form-group">
+                                    <label>紧急联系人姓名</label>
+                                    <input type="text" class="form-input" placeholder="请输入姓名" id="contact-name">
+                                </div>
+                                <div class="form-group">
+                                    <label>关系</label>
+                                    <input type="text" class="form-input" placeholder="如：子女" id="contact-relation">
+                                </div>
+                                <div class="form-group">
+                                    <label>联系电话</label>
+                                    <input type="tel" class="form-input" placeholder="请输入手机号" id="contact-phone">
+                                </div>
+                                <button class="btn btn-primary" id="save-contacts">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 底部栏 -->
+    <footer class="bottom-bar">
+        <div class="copyright">
+            <p>&copy; 2026 老人行为健康监测系统 | 保护老人安全，守护家庭幸福</p>
+        </div>
+        <button class="emergency-btn" onclick="showEmergencyModal()">🚨 紧急呼叫</button>
+    </footer>
+
+    <!-- 告警详情弹窗 -->
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>告警详情</h3>
+                <button class="close-btn" onclick="closeModal('alertModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-info">
+                    <p><strong>告警类型：</strong><span id="modal-alert-type">--</span></p>
+                    <p><strong>发生时间：</strong><span id="modal-alert-time">--</span></p>
+                    <p><strong>详细描述：</strong><span id="modal-alert-desc">--</span></p>
+                </div>
+                <div class="alert-actions">
+                    <textarea placeholder="请输入处理备注..." id="alert-note"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('alertModal')">关闭</button>
+                <button class="btn btn-primary" onclick="handleAlert()">标记已处理</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 紧急呼叫弹窗 -->
+    <div class="modal" id="emergencyModal">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ea4335;">
+                <h3>🚨 紧急呼叫</h3>
+                <button class="close-btn" onclick="closeModal('emergencyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-info">
+                    <p style="color: #ea4335; font-weight: bold; margin-bottom: 1rem;">
+                        确认要发起紧急呼叫吗？这将立即通知紧急联系人。
+                    </p>
+                    <div class="emergency-contacts">
+                        <div class="contact-item">
+                            <span>👤 张先生（子女）</span>
+                            <span>138****8888</span>
+                        </div>
+                        <div class="contact-item">
+                            <span>🏥 社区卫生服务中心</span>
+                            <span>010-12345678</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('emergencyModal')">取消</button>
+                <button class="btn btn-danger" onclick="confirmEmergency()">确认呼叫</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 权限提示弹窗 -->
+    <div class="modal" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #fbbc05;">
+                <h3>⚠️ 权限不足</h3>
+                <button class="close-btn" onclick="closeModal('permissionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>您没有权限执行此操作。请联系管理员获取相应权限。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('permissionModal')">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
